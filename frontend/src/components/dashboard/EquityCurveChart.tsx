@@ -24,8 +24,8 @@ export default function EquityCurveChart({ data }: { data: EquityPoint[] }) {
             />
             <YAxis tick={{ fontSize: 11, fill: '#12181f99' }} />
             <Tooltip
-              formatter={(value: number) => [`${value}R`, 'Cumulé']}
-              labelFormatter={(d) => new Date(d).toLocaleDateString('fr-FR')}
+              formatter={(value: unknown) => [`${Number(value)}R`, 'Cumulé']}
+              labelFormatter={(d: unknown) => new Date(String(d)).toLocaleDateString('fr-FR')}
             />
             <Line
               type="monotone"
