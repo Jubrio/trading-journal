@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-paper text-ink antialiased;
+}
+
+.input {
+  @apply rounded border border-line bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink/40;
+}

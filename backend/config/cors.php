@@ -1,0 +1,26 @@
+<?php
+
+return [
+
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+
+    'allowed_methods' => ['*'],
+
+    // FRONTEND_URL in .env can hold a comma-separated list, e.g.
+    // "http://localhost:5173,https://mytradejournal.vercel.app"
+    'allowed_origins' => array_filter(array_map(
+        'trim',
+        explode(',', env('FRONTEND_URL', 'http://localhost:5173'))
+    )),
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => true,
+
+];
