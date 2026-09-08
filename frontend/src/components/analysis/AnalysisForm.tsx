@@ -1,19 +1,10 @@
-import { type FormEvent, useState } from 'react'
+import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
 import ZoneTypeSelector from './ZoneTypeSelector'
 import Card from '../ui/Card'
 import { createAnalysis } from '../../api/analyses'
-
-// Static lookups for now — in production these come from GET /zone-types and
-// GET /trading-setups (per-user, since the migrations key them by user_id).
-const ZONE_TYPES = [
-  { id: 1, code: 'OB', label: 'Order Block' },
-  { id: 2, code: 'FVG', label: 'Fair Value Gap' },
-  { id: 3, code: 'FIBO', label: 'Fibonacci' },
-  { id: 4, code: 'OTE', label: 'OTE' },
-  { id: 5, code: 'BOS', label: 'BOS' },
-  { id: 6, code: 'CHOCH', label: 'CHoCH' },
-  { id: 7, code: 'LIQUIDITY', label: 'Liquidity' },
-]
+import { fetchZoneTypes } from '../../api/zoneTypes'
+import type { ZoneType } from '../../types'
 
 const TIMEFRAMES = ['M1', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1']
 const SESSIONS = [
@@ -23,9 +14,14 @@ const SESSIONS = [
 ]
 
 export default function AnalysisForm({ tradingAccountId }: { tradingAccountId: number }) {
+  const [zoneTypes, setZoneTypes] = useState<ZoneType[]>([])
   const [zoneTypeIds, setZoneTypeIds] = useState<number[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    fetchZoneTypes().then(setZoneTypes).catch(() => setZoneTypes([]))
+  }, [])
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -87,7 +83,7 @@ export default function AnalysisForm({ tradingAccountId }: { tradingAccountId: n
         </div>
         <div className="mt-4">
           <p className="mb-2 text-sm text-ink/60">Type(s) de zone</p>
-          <ZoneTypeSelector options={ZONE_TYPES} selected={zoneTypeIds} onChange={setZoneTypeIds} />
+          <ZoneTypeSelector options={zoneTypes} selected={zoneTypeIds} onChange={setZoneTypeIds} />
         </div>
       </Card>
 

@@ -17,30 +17,16 @@ export default function EquityCurveChart({ data }: { data: EquityPoint[] }) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 8, right: 12, left: -16, bottom: 0 }}>
             <CartesianGrid stroke="#e2e0da" vertical={false} />
-
             <XAxis
               dataKey="date"
               tick={{ fontSize: 11, fill: '#12181f99' }}
-              tickFormatter={(value) =>
-                new Date(String(value)).toLocaleDateString('fr-FR', {
-                  day: '2-digit',
-                  month: '2-digit',
-                })
-              }
+              tickFormatter={(d) => new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
             />
-
             <YAxis tick={{ fontSize: 11, fill: '#12181f99' }} />
-
             <Tooltip
-              formatter={(value) => [
-                `${typeof value === 'number' ? value : Number(value ?? 0)}R`,
-                'Cumulé',
-              ]}
-              labelFormatter={(value) =>
-                new Date(String(value)).toLocaleDateString('fr-FR')
-              }
+              formatter={(value: number) => [`${value}R`, 'Cumulé']}
+              labelFormatter={(d) => new Date(d).toLocaleDateString('fr-FR')}
             />
-
             <Line
               type="monotone"
               dataKey="cumulative_r"
@@ -54,4 +40,3 @@ export default function EquityCurveChart({ data }: { data: EquityPoint[] }) {
     </Card>
   )
 }
-

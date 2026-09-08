@@ -7,6 +7,7 @@ import NewAnalysis from './pages/NewAnalysis'
 import Analyses from './pages/Analyses'
 import AnalysisDetail from './pages/AnalysisDetail'
 import Login from './pages/Login'
+import Register from './pages/Register'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('auth_token')
@@ -17,6 +18,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route
         path="/*"
         element={
