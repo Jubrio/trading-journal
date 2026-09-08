@@ -164,22 +164,12 @@ function TradeResultPanel({
     setSubmitting(true)
     const form = new FormData(e.currentTarget)
 
-    const resultType = String(form.get('result_type') || '')
-    // On mobile, typing a "-" is annoying — so the fields always take a
-    // positive number, and we flip the sign ourselves when the trade is a
-    // loss (SL). TP/BE/manual close keep whatever sign the user entered.
-    const sign = resultType === 'sl' ? -1 : 1
-
-    const resultPips = Number(form.get('result_pips')) || undefined
-    const resultUsd = Number(form.get('result_usd')) || undefined
-    const resultR = Number(form.get('result_r')) || undefined
-
     try {
       await updateTrade(trade.id, {
-        result_type: resultType || undefined,
-        result_pips: resultPips !== undefined ? sign * Math.abs(resultPips) : undefined,
-        result_usd: resultUsd !== undefined ? sign * Math.abs(resultUsd) : undefined,
-        result_r: resultR !== undefined ? sign * Math.abs(resultR) : undefined,
+        result_type: String(form.get('result_type') || '') || undefined,
+        result_pips: Number(form.get('result_pips')) || undefined,
+        result_usd: Number(form.get('result_usd')) || undefined,
+        result_r: Number(form.get('result_r')) || undefined,
         exit_time: String(form.get('exit_time') || '') || undefined,
         mae_pips: Number(form.get('mae_pips')) || undefined,
         mfe_pips: Number(form.get('mfe_pips')) || undefined,
@@ -226,7 +216,7 @@ function TradeResultPanel({
                 <option value="manual_close">Fermeture manuelle</option>
               </select>
               <span className="text-xs text-ink/40">
-                Saisis toujours des valeurs positives — le signe est géré automatiquement pour SL.
+                Pour un SL, tape un signe moins devant la valeur (ex: -20).
               </span>
             </label>
             <label className="flex flex-col gap-1 text-sm">
@@ -235,15 +225,15 @@ function TradeResultPanel({
             </label>
             <label className="flex flex-col gap-1 text-sm">
               Résultat (pips)
-              <input type="number" step="0.1" min="0" name="result_pips" className="input" />
+              <input type="text" inputMode="decimal" name="result_pips" placeholder="ex: -20 ou 45.5" className="input" />
             </label>
             <label className="flex flex-col gap-1 text-sm">
               Résultat ($)
-              <input type="number" step="0.01" min="0" name="result_usd" className="input" />
+              <input type="text" inputMode="decimal" name="result_usd" placeholder="ex: -20 ou 45.5" className="input" />
             </label>
             <label className="flex flex-col gap-1 text-sm">
               RR réel
-              <input type="number" step="0.01" min="0" name="result_r" className="input" />
+              <input type="text" inputMode="decimal" name="result_r" placeholder="ex: -1 ou 2.5" className="input" />
             </label>
             <label className="flex flex-col gap-1 text-sm">
               MAE (pips)
