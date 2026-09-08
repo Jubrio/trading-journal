@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import ZoneTypeSelector from './ZoneTypeSelector'
 import Card from '../ui/Card'
 import { createAnalysis } from '../../api/analyses'

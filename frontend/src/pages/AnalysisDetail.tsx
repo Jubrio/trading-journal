@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import { fetchAnalysis } from '../api/analyses'
