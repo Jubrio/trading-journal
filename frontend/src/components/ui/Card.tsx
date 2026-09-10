@@ -2,17 +2,26 @@ import type { ReactNode } from 'react'
 
 export default function Card({
   title,
+  action,
   children,
-  className = '',
 }: {
   title?: string
+  action?: ReactNode
   children: ReactNode
-  className?: string
 }) {
   return (
-    <div className={`border border-line bg-white p-5 ${className}`}>
-      {title && <h3 className="mb-3 text-sm font-medium text-ink/60">{title}</h3>}
-      {children}
-    </div>
+    <section className="border border-line bg-white">
+      {(title || action) && (
+        <header className="flex items-center justify-between border-b border-line px-4 py-3 sm:px-6">
+          {title && (
+            <h2 className="font-mono text-xs tracking-wide text-ink/60 uppercase">
+              {title}
+            </h2>
+          )}
+          {action}
+        </header>
+      )}
+      <div className="px-4 py-4 sm:px-6 sm:py-5">{children}</div>
+    </section>
   )
 }

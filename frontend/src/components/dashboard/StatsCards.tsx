@@ -1,38 +1,34 @@
 import type { DashboardSummary } from '../../types'
-import Card from '../ui/Card'
 
 export default function StatsCards({ summary }: { summary: DashboardSummary }) {
-  const { real_performance, missed_opportunities } = summary
+  const cards = [
+    { label: 'Analyses', value: summary.total_analyses },
+    { label: 'Trades pris', value: summary.total_trades },   
+    { label: 'Win rate', value: `${summary.win_rate}%` },
+    { label: 'RR moyen', value: summary.avg_rr },
+    { label: 'Net réel', value: `${summary.net_r >= 0 ? '+' : ''}${summary.net_r}R` },
+    { label: 'Opportunités manquées', value: `+${summary.missed_r}R`, accent: true },
+  ]
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-      <Card title="Trades pris">
-        <p className="font-mono text-2xl text-ink">{real_performance.trades}</p>
-      </Card>
-      <Card title="Win rate">
-        <p className="font-mono text-2xl text-ink">
-          {real_performance.win_rate !== null ? `${real_performance.win_rate}%` : '—'}
-        </p>
-      </Card>
-      <Card title="Performance réelle">
-        <p
-          className={`font-mono text-2xl ${
-            real_performance.net_r >= 0 ? 'text-accent' : 'text-loss'
-          }`}
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+      {cards.map((c) => (
+        <div
+          key={c.label}
+          className="border border-line bg-white p-3 sm:p-4"
         >
-          {real_performance.net_r >= 0 ? '+' : ''}
-          {real_performance.net_r}R
-        </p>
-      </Card>
-      <Card title="Opportunités manquées">
-        <p className="font-mono text-lg text-ink/60 sm:text-2xl">
-          {missed_opportunities.potential_r >= 0 ? '+' : ''}
-          {missed_opportunities.potential_r}R potentiel
-        </p>
-        <p className="mt-1 text-xs text-ink/40">
-          {missed_opportunities.analyses} analyse(s) non déclenchée(s)
-        </p>
-      </Card>
+          <p className="text-[11px] uppercase tracking-wide text-ink/50 sm:text-xs">
+            {c.label}
+          </p>
+          <p
+            className={`mt-1 text-lg font-medium sm:text-xl ${
+              c.accent ? 'text-accent' : 'text-ink'
+            }`}
+          >
+            {c.value}
+          </p>
+        </div>
+      ))}
     </div>
   )
 }

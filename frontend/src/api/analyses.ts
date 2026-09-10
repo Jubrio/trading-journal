@@ -21,8 +21,8 @@ export interface AnalysisPayload {
 }
 
 export async function fetchAnalyses(params?: Record<string, string>) {
-  const { data } = await api.get<{ data: Analysis[] }>('/analyses', { params })
-  return data.data
+  const { data } = await api.get<Analysis[]>('/analyses', { params })
+  return data
 }
 
 export async function fetchAnalysis(id: number) {

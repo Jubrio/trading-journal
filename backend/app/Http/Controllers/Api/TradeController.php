@@ -3,46 +3,70 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Analysis;
 use App\Models\Trade;
+use App\Models\Analysis;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TradeController extends Controller
 {
-    // A trade is always created from an existing analysis (see 7. in the spec:
-    // an analysis can exist without ever becoming a trade).
     public function store(Request $request, Analysis $analysis)
     {
+        abort_unless($analysis->user_id === $request->user()->id, 403);
+
         $data = $request->validate([
             'activated' => ['required', 'boolean'],
             'activation_time' => ['nullable', 'date'],
             'entry_price' => ['nullable', 'numeric'],
             'sl_price' => ['nullable', 'numeric'],
             'tp_price' => ['nullable', 'numeric'],
+            'mae' => ['nullable', 'numeric'],
+            'mfe' => ['nullable', 'numeric'],
+            'be_touched' => ['boolean'],
+            'be_time' => ['nullable', 'date'],
+            'exit_price' => ['nullable', 'numeric'],
+            'exit_time' => ['nullable', 'date'],
+            'result_type' => ['nullable', Rule::in(['tp', 'sl', 'be', 'manual'])],
+            'result_pips' => ['nullable', 'numeric'],
+            'result_r' => ['nullable', 'numeric'],
+            'result_usd' => ['nullable', 'numeric'],
+            'duration_minutes' => ['nullable', 'integer'],
         ]);
 
-        $trade = $analysis->trade()->create($data);
+        // Empêche d'avoir deux trades pour la même analyse
+        $trade = $analysis->trade()->updateOrCreate(
+            ['analysis_id' => $analysis->id],
+            $data
+        );
 
         return response()->json($trade, 201);
     }
 
     public function update(Request $request, Trade $trade)
     {
+        abort_unless($trade->analysis->user_id === $request->user()->id, 403);
+
         $data = $request->validate([
-            'mae_pips' => ['nullable', 'numeric'],
-            'mfe_pips' => ['nullable', 'numeric'],
-            'be_touched' => ['boolean'],
+            'activated' => ['sometimes', 'boolean'],
+            'activation_time' => ['nullable', 'date'],
+            'entry_price' => ['nullable', 'numeric'],
+            'sl_price' => ['nullable', 'numeric'],
+            'tp_price' => ['nullable', 'numeric'],
+            'mae' => ['nullable', 'numeric'],
+            'mfe' => ['nullable', 'numeric'],
+            'be_touched' => ['sometimes', 'boolean'],
             'be_time' => ['nullable', 'date'],
-            'result_type' => ['nullable', 'in:tp,sl,be,manual_close'],
-            'result_pips' => ['nullable', 'numeric'],
-            'result_usd' => ['nullable', 'numeric'],
-            'result_r' => ['nullable', 'numeric'],
+            'exit_price' => ['nullable', 'numeric'],
             'exit_time' => ['nullable', 'date'],
-            'notes' => ['nullable', 'string'],
+            'result_type' => ['nullable', Rule::in(['tp', 'sl', 'be', 'manual'])],
+            'result_pips' => ['nullable', 'numeric'],
+            'result_r' => ['nullable', 'numeric'],
+            'result_usd' => ['nullable', 'numeric'],
+            'duration_minutes' => ['nullable', 'integer'],
         ]);
 
         $trade->update($data);
 
-        return response()->json($trade);
+        return response()->json($trade->fresh());
     }
 }
